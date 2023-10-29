@@ -3,6 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { AppController } from './app.controller';
+import { EventController } from './event/event.controller';
+import { EventService } from './event/event.service';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -32,6 +35,7 @@ import { AppController } from './app.controller';
         };
       },
     }),
+    EventModule,
   ],
   controllers: [AppController],
 })
