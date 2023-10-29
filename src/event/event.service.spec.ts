@@ -5,14 +5,25 @@ import { EventRepository } from './event.repository';
 
 
 const mockEventService = {
+  find: jest.fn()
 };
-const mockEventResponse = [
+
+
+interface mockEventInterface {
+  id: string
+  name: string
+  surname: string
+  email: string
+  date: Date
+}
+
+const mockEvent: mockEventInterface[] = [
   {
     id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
     name: 'Julia',
     surname: 'Test',
     email: 'email@email.com',
-    date: 'Date'
+    date: new Date()
   },
 ];
 
@@ -40,5 +51,16 @@ describe('EventService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
     expect(repository).toBeDefined();
+  });
+
+  describe('getEvents', () => {
+    it('should successfully return all events', async () => {
+      jest
+        .spyOn(repository, 'find')
+        .mockResolvedValue(mockEvent);
+      const result = await service.getEvents();
+      expect(repository.find).toHaveBeenCalled();
+      expect(result).toEqual(mockEvent);
+    });
   });
 });

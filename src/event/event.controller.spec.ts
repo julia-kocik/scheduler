@@ -4,15 +4,25 @@ import { EventService } from './event.service';
 
 
 const mockEventService = {
+  getEvents: jest.fn()
 };
 
-const mockEvent = {
+interface mockEventInterface {
+  id: string
+  name: string
+  surname: string
+  email: string
+  date: Date
+}
+
+const mockEvent: mockEventInterface = {
     id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
     name: 'Julia',
     surname: 'Test',
     email: 'email@email.com',
-    date: 'Date'
+    date: new Date()
 };
+
 
 describe('Event Controller', () => {
   let controller: EventController;
@@ -36,5 +46,16 @@ describe('Event Controller', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
     expect(service).toBeDefined();
+  });
+
+  describe('getEvents', () => {
+    it('should successfully return all events', async () => {
+      jest
+        .spyOn(service, 'getEvents')
+        .mockResolvedValue([mockEvent]);
+      const result = await controller.getEvents();
+      expect(service.getEvents).toHaveBeenCalled();
+      expect(result).toEqual([mockEvent]);
+    });
   });
 });
