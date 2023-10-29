@@ -1,6 +1,7 @@
+import { CreateEventDto } from './dto/create-event.dto';
 import { EventEntity } from './event.entity';
 import { EventService } from './event.service';
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 @Controller('event')
 export class EventController {
@@ -10,5 +11,10 @@ export class EventController {
     getEvents(): Promise<EventEntity[]> {
       return this.eventService.getEvents();
     }
+
+    @Post()
+    createEvent(@Body() createEventDto: CreateEventDto): Promise<EventEntity> {
+        return this.eventService.createEvent(createEventDto);
+      }
   
 }
