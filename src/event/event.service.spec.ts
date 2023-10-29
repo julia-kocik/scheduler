@@ -2,10 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EventService } from './event.service';
 import { EventRepository } from './event.repository';
+import { CreateEventDto } from './dto/create-event.dto';
 
 
 const mockEventService = {
-  find: jest.fn()
+  find: jest.fn(),
+  save: jest.fn(),
+  create: jest.fn()
 };
 
 
@@ -17,15 +20,20 @@ interface mockEventInterface {
   date: Date
 }
 
-const mockEvent: mockEventInterface[] = [
-  {
+const mockEvent: mockEventInterface = {
     id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
     name: 'Julia',
     surname: 'Test',
     email: 'email@email.com',
-    date: new Date()
-  },
-];
+    date: new Date(1995, 11, 17)
+}
+
+const mockEventDto: CreateEventDto = {
+  name: 'Julia',
+  surname: 'Test',
+  email: 'email@email.com',
+  date: new Date(1995, 11, 17)
+};
 
 describe('EventService', () => {
   let service: EventService;
@@ -57,9 +65,26 @@ describe('EventService', () => {
     it('should successfully return all events', async () => {
       jest
         .spyOn(repository, 'find')
-        .mockResolvedValue(mockEvent);
+        .mockResolvedValue([mockEvent]);
       const result = await service.getEvents();
       expect(repository.find).toHaveBeenCalled();
+      expect(result).toEqual([mockEvent]);
+    });
+  });
+
+  describe('create Event', () => {
+    it('should successfully create an event with correct params', async () => {
+
+      jest
+      .spyOn(repository, 'create')
+      .mockReturnValue(mockEvent);
+
+      jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue(mockEvent);
+      const result = await service.createEvent(mockEventDto);
+      expect(repository.create).toHaveBeenCalled();
+      expect(repository.save).toHaveBeenCalled();
       expect(result).toEqual(mockEvent);
     });
   });

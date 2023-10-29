@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
+import { CreateEventDto } from './dto/create-event.dto';
 
 
 const mockEventService = {
-  getEvents: jest.fn()
+  getEvents: jest.fn(),
+  createEvent: jest.fn()
 };
 
 interface mockEventInterface {
@@ -20,7 +22,14 @@ const mockEvent: mockEventInterface = {
     name: 'Julia',
     surname: 'Test',
     email: 'email@email.com',
-    date: new Date()
+    date: new Date(1995, 11, 17)
+};
+
+const mockEventDto: CreateEventDto = {
+  name: 'Julia',
+  surname: 'Test',
+  email: 'email@email.com',
+  date: new Date(1995, 11, 17)
 };
 
 
@@ -56,6 +65,16 @@ describe('Event Controller', () => {
       const result = await controller.getEvents();
       expect(service.getEvents).toHaveBeenCalled();
       expect(result).toEqual([mockEvent]);
+    });
+  });
+
+  describe('create Event', () => {
+    it('should create a new trip and return it, with correct params', async () => {
+      jest
+        .spyOn(service, 'createEvent')
+        .mockResolvedValue(mockEvent);
+      const result = await controller.createEvent(mockEventDto);
+      expect(result).toEqual(mockEvent);
     });
   });
 });
