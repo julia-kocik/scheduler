@@ -4,13 +4,15 @@ import { EventService } from './event.service';
 import { EventRepository } from './event.repository';
 import { CreateEventDto } from './dto/create-event.dto';
 import { NotFoundException } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
 
 
 const mockEventService = {
   find: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
-  findOne: jest.fn()
+  findOne: jest.fn(),
+  delete: jest.fn()
 };
 
 
@@ -110,6 +112,32 @@ describe('EventService', () => {
 
       await expect(service.getEventById(mockEvent.id)).rejects.toThrow(
         new NotFoundException(`Event with id 1234 does not exist`),
+      );
+    });
+  });
+
+  describe('deleteById', () => {
+    it('should succesfully deleteById', async () => {
+      const mockResult: DeleteResult = { affected: 1, raw: [] };
+      
+      jest
+        .spyOn(repository, 'delete')
+        .mockResolvedValue(mockResult);
+
+      await expect(
+        service.deleteById(mockEvent.id),
+      ).resolves.toBeUndefined();
+    });
+
+    it('throws NotFound exception if no element is found', async () => {
+      const mockResult: DeleteResult = { affected: 0, raw: [] };
+
+      jest
+      .spyOn(repository, 'delete')
+      .mockResolvedValue(mockResult);
+
+      await expect(service.deleteById(mockEvent.id)).rejects.toThrow(
+        new NotFoundException(`Event with id: ${mockEvent.id} not found`),
       );
     });
   });

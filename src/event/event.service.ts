@@ -29,4 +29,11 @@ export class EventService {
       }
       return specificEvent
     }
+
+    async deleteById(id: string): Promise<void> {
+      const result = await this.eventRepository.delete({id})
+      if(result.affected === 0) {
+        throw new NotFoundException(`Event with id: ${id} not found`)
+      }
+    }
 }

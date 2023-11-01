@@ -1,7 +1,7 @@
 import { CreateEventDto } from './dto/create-event.dto';
 import { EventEntity } from './event.entity';
 import { EventService } from './event.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Delete } from '@nestjs/common';
 
 @Controller('event')
 export class EventController {
@@ -22,5 +22,10 @@ export class EventController {
       @Param('id') id: string,
     ): Promise<EventEntity> {
       return this.eventService.getEventById(id);
+    }
+
+    @Delete('/:id')
+    deleteById(@Param('id') id: string): Promise<void> {
+      return this.eventService.deleteById(id);
     }
 }

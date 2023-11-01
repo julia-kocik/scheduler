@@ -8,7 +8,8 @@ import { NotFoundException } from '@nestjs/common';
 const mockEventService = {
   getEvents: jest.fn(),
   createEvent: jest.fn(),
-  getEventById: jest.fn()
+  getEventById: jest.fn(),
+  deleteById: jest.fn()
 };
 
 interface mockEventInterface {
@@ -97,6 +98,32 @@ describe('Event Controller', () => {
 
       await expect(controller.getEventById(mockEvent.id)).rejects.toThrow(
         new NotFoundException(`Event with id 1234 does not exist`),
+      );
+    });
+  });
+
+  describe('deleteById', () => {
+    it('should successfully deleteById', async () => {
+      jest
+        .spyOn(service, 'deleteById')
+        .mockResolvedValue();
+
+      await controller.deleteById(mockEvent.id);
+
+      expect(service.deleteById).toHaveBeenCalledWith(mockEvent.id);
+    });
+
+    it('throws NotFound exception if no element is found', async () => {
+      const mockError = new NotFoundException(
+        `Event with id: ${mockEvent.id} not found`,
+      );
+
+      jest.spyOn(service, 'deleteById').mockRejectedValue(mockError);
+      expect(service.deleteById).toHaveBeenCalled();
+      await expect(
+        controller.deleteById(mockEvent.id),
+      ).rejects.toThrow(
+        new NotFoundException(`Event with id: ${mockEvent.id} not found`),
       );
     });
   });
