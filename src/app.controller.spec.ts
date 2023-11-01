@@ -20,7 +20,7 @@ describe('App Controller', () => {
   describe('getHello', () => {
     it('should successfully return Hello', () => {
       const result = controller.getHello();
-      expect(result).toEqual("Hello World!");
+      expect(result).toEqual("Hello!");
     });
   });
 
