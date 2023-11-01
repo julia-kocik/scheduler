@@ -17,6 +17,7 @@ describe('App Controller', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+  
   describe('getHello', () => {
     it('should successfully return Hello', () => {
       const result = controller.getHello();
