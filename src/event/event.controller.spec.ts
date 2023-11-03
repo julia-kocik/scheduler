@@ -2,14 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { EventEntity } from './event.entity';
 
 
 const mockEventService = {
   getEvents: jest.fn(),
   createEvent: jest.fn(),
   getEventById: jest.fn(),
-  deleteById: jest.fn()
+  deleteById: jest.fn(),
+  updateEvent: jest.fn()
 };
 
 interface mockEventInterface {
@@ -72,7 +74,7 @@ describe('Event Controller', () => {
   });
 
   describe('create Event', () => {
-    it('should create a new trip and return it, with correct params', async () => {
+    it('should create a new event and return it, with correct params', async () => {
       jest
         .spyOn(service, 'createEvent')
         .mockResolvedValue(mockEvent);
@@ -127,4 +129,65 @@ describe('Event Controller', () => {
       );
     });
   });
+
+  describe('updateEvent', () => {
+    it('should succesfully updateEvent when all query params are provided', async () => {
+      const query  = {    
+        name: 'Maria', 
+        surname: 'Test1', 
+        email: 'email@test1.com', 
+        date: new Date(1995, 11, 15)
+      }
+      const updatedEvent: EventEntity = {    
+        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',      
+        name: 'Maria', 
+        surname: 'Test1', 
+        email: 'email@test1.com', 
+        date: new Date(1995, 11, 15)
+      }
+      jest
+        .spyOn(service, 'updateEvent')
+        .mockResolvedValue(updatedEvent);
+
+      const result = await controller.updateEvent(
+        mockEvent.id,
+        query,
+      );
+      expect(result).toEqual(updatedEvent);
+    });
+
+    it('should succesfully updateEvent when some query params are provided', async () => {
+      const query  = {    
+        name: 'Maria', 
+        surname: 'Test1', 
+      }
+      const updatedEvent: EventEntity = {    
+        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',      
+        name: 'Maria', 
+        surname: 'Test1', 
+        email: mockEvent.email, 
+        date: mockEvent.date
+      }
+      jest
+        .spyOn(service, 'updateEvent')
+        .mockResolvedValue(updatedEvent);
+
+      const result = await controller.updateEvent(
+        mockEvent.id,
+        query,
+      );
+      expect(result).toEqual(updatedEvent);
+    });
+
+    it('should throw BadRequest when none params are provided', async () => {
+      const query  = {}
+      jest
+        .spyOn(service, 'updateEvent').mockRejectedValue(new BadRequestException('No valid query parameters provided'));
+
+        await expect(controller.updateEvent(mockEvent.id, query)).rejects.toThrow(
+          new BadRequestException('No valid query parameters provided'),
+        );
+    });
+  });
+
 });

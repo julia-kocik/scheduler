@@ -1,7 +1,8 @@
 import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventQueryDto } from './dto/update-event-query.dto';
 import { EventEntity } from './event.entity';
 import { EventService } from './event.service';
-import { Body, Controller, Get, Param, Post, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Delete, Patch, Query, BadRequestException } from '@nestjs/common';
 
 @Controller('event')
 export class EventController {
@@ -28,4 +29,13 @@ export class EventController {
     deleteById(@Param('id') id: string): Promise<void> {
       return this.eventService.deleteById(id);
     }
+
+    @Patch('/:id')
+    updateEvent(
+      @Param('id') id: string,
+      @Query() query: UpdateEventQueryDto, 
+    ): Promise<EventEntity> {
+      return this.eventService.updateEvent(id, query);
+    }
+    
 }

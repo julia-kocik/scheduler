@@ -3,8 +3,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { EventService } from './event.service';
 import { EventRepository } from './event.repository';
 import { CreateEventDto } from './dto/create-event.dto';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
+import { EventEntity } from './event.entity';
 
 
 const mockEventService = {
@@ -12,7 +13,8 @@ const mockEventService = {
   save: jest.fn(),
   create: jest.fn(),
   findOne: jest.fn(),
-  delete: jest.fn()
+  delete: jest.fn(),
+  updateEvent: jest.fn()
 };
 
 
@@ -139,6 +141,67 @@ describe('EventService', () => {
       await expect(service.deleteById(mockEvent.id)).rejects.toThrow(
         new NotFoundException(`Event with id: ${mockEvent.id} not found`),
       );
+    });
+  });
+
+  describe('updateEvent', () => {
+    it('should succesfully updateEvent when all query params are provided', async () => {
+      const query  = {    
+        name: 'Maria', 
+        surname: 'Test1', 
+        email: 'email@test1.com', 
+        date: new Date(1995, 11, 15)
+      }
+      const updatedEvent: EventEntity = {    
+        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',      
+        name: 'Maria', 
+        surname: 'Test1', 
+        email: 'email@test1.com', 
+        date: new Date(1995, 11, 15)
+      }
+      jest
+        .spyOn(service, 'getEventById')
+        .mockResolvedValue(mockEvent);
+
+      const result = await service.updateEvent(
+        mockEvent.id,
+        query,
+      );
+      expect(result).toEqual(updatedEvent);
+    });
+
+    it('should succesfully updateEvent when some query params are provided', async () => {
+      const query  = {    
+        name: 'Maria', 
+        surname: 'Test1', 
+      }
+      const updatedEvent: EventEntity = {    
+        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',      
+        name: 'Maria', 
+        surname: 'Test1', 
+        email: mockEvent.email, 
+        date: mockEvent.date
+      }
+      jest
+        .spyOn(service, 'getEventById')
+        .mockResolvedValue(mockEvent);
+
+      const result = await service.updateEvent(
+        mockEvent.id,
+        query,
+      );
+      expect(result).toEqual(updatedEvent);
+    });
+
+    it('should throw BadRequest when none params are provided', async () => {
+      const query  = {}
+      jest
+        .spyOn(service, 'getEventById')
+        .mockResolvedValue(mockEvent);
+
+        await expect(service.updateEvent(mockEvent.id, query)).rejects.toThrow(
+          new BadRequestException('No valid query parameters provided'),
+        );
     });
   });
 });
