@@ -6,6 +6,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { EventEntity } from './event.entity';
+import { validate } from 'class-validator';
 
 
 const mockEventService = {
@@ -93,11 +94,30 @@ describe('EventService', () => {
       expect(repository.save).toHaveBeenCalled();
       expect(result).toEqual(mockEvent);
     });
+    
+    it('should throw error when email is in an invalid format', async () => {
+      const event = new EventEntity();
+      event.name = 'Jane';
+      event.surname = 'Smith';
+      event.email = 'invalid-email';
+      event.date = new Date(1995, 11, 17);
+
+      const errors = await validate(event);
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0].constraints.isEmail).toEqual('Invalid email format')
+    });
+
+    it('should not pass validation when properties are empty', async () => {
+      const emptyDto = new CreateEventDto();
+  
+      const errors = await validate(emptyDto);
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
   });
 
   describe('GetEventById', () => {
     it('should successfully return event with a given id', async () => {
-
       jest
         .spyOn(repository, 'findOne')
         .mockResolvedValue(mockEvent);
@@ -192,7 +212,7 @@ describe('EventService', () => {
       );
       expect(result).toEqual(updatedEvent);
     });
-
+    
     it('should throw BadRequest when none params are provided', async () => {
       const query  = {}
       jest

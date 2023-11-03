@@ -73,7 +73,7 @@ describe('Event Controller', () => {
     });
   });
 
-  describe('create Event', () => {
+  describe('createEvent', () => {
     it('should create a new event and return it, with correct params', async () => {
       jest
         .spyOn(service, 'createEvent')

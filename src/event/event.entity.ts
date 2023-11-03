@@ -1,3 +1,4 @@
+import { IsEmail } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -12,6 +13,7 @@ export class EventEntity {
   surname: string;
 
   @Column()
+  @IsEmail({}, { message: 'Invalid email format' })
   email: string;
 
   @Column()

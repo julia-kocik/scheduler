@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateEventDto {
   @IsNotEmpty()
@@ -10,7 +10,7 @@ export class CreateEventDto {
   surname: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsEmail({}, { message: 'Invalid email format' })
   email: string;
 
   @IsNotEmpty()

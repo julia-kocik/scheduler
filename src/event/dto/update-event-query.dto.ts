@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsEmail } from 'class-validator';
 
 export class UpdateEventQueryDto {
   @IsString()
@@ -9,7 +9,7 @@ export class UpdateEventQueryDto {
   @IsOptional()
   surname?: string;
 
-  @IsString()
+  @IsEmail({}, { message: 'Invalid email format' })
   @IsOptional()
   email?: string;
 
