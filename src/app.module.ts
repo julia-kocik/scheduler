@@ -3,8 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { AppController } from './app.controller';
-import { EventController } from './event/event.controller';
-import { EventService } from './event/event.service';
 import { EventModule } from './event/event.module';
 
 @Module({
@@ -18,6 +16,16 @@ import { EventModule } from './event/event.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const isProduction = configService.get('STAGE') === 'prod';
+        const isTest = configService.get('STAGE') === 'test';
+        if(isTest) {
+          return {
+            type: 'sqlite',
+            database: ':memory:',
+            entities: [__dirname + '/../**/*.entity.ts'],
+            synchronize: true,
+            logging: false,
+          }
+        }
         return {
           ssl: isProduction ? true : false,
           extra: {
