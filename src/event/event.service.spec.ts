@@ -96,18 +96,16 @@ describe('EventService', () => {
     });
     
     it('should throw error when email is in an invalid format', async () => {
-      const event = new EventEntity();
-      event.name = 'Jane';
-      event.surname = 'Smith';
-      event.email = 'invalid-email';
-      event.date = new Date(1995, 11, 17);
+      const date = new Date(1995, 11, 17)
+      const event = new EventEntity('123', 'Jane', 'Smith', 'invalidemail', date);
 
       const errors = await validate(event);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors[0].constraints.isEmail).toEqual('Invalid email format')
+      expect(errors[0]?.constraints?.isEmail).toEqual('Invalid email format')
     });
 
     it('should not pass validation when properties are empty', async () => {
+      // @ts-ignore
       const emptyDto = new CreateEventDto();
   
       const errors = await validate(emptyDto);

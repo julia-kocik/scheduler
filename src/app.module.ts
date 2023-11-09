@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { AppController } from './app.controller';
@@ -14,7 +14,7 @@ import { EventModule } from './event/event.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => {
         const isProduction = configService.get('STAGE') === 'prod';
         const isTest = configService.get('STAGE') === 'test';
         if(isTest) {
@@ -32,7 +32,7 @@ import { EventModule } from './event/event.module';
             ssl: isProduction ? { rejectUnauthorized: false } : null,
           },
           type: 'postgres',
-          url: !isProduction && configService.get('DATABASE_URL'),
+          url: !isProduction ? configService.get('DATABASE_URL') : '',
           port: configService.get('POSTGRES_PORT'),
           host: configService.get('POSTGRES_HOST'),
           autoLoadEntities: true,

@@ -42,12 +42,14 @@ export class EventService {
       id: string,
       query: UpdateEventQueryDto,
     ): Promise<EventEntity> {
-      const specificEvent = await this.getEventById(id);
+      const specificEvent: EventEntity = await this.getEventById(id);
       if (Object.keys(query).length === 0) {
         throw new BadRequestException('No valid query parameters provided');
       }
       for (const prop of Object.keys(query)) {
-        specificEvent[prop] = query[prop];
+        if(prop in specificEvent) { 
+          specificEvent[prop] = query[prop]
+        }
       }
     
       await this.eventRepository.save(specificEvent);
