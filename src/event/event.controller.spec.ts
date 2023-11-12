@@ -10,8 +10,9 @@ const mockEventService = {
   getEvents: jest.fn(),
   createEvent: jest.fn(),
   getEventById: jest.fn(),
+  updateEvent: jest.fn(),
   deleteById: jest.fn(),
-  updateEvent: jest.fn()
+  deleteAll: jest.fn(),
 };
 
 interface mockEventInterface {
@@ -104,32 +105,6 @@ describe('Event Controller', () => {
     });
   });
 
-  describe('deleteById', () => {
-    it('should successfully deleteById', async () => {
-      jest
-        .spyOn(service, 'deleteById')
-        .mockResolvedValue();
-
-      await controller.deleteById(mockEvent.id);
-
-      expect(service.deleteById).toHaveBeenCalledWith(mockEvent.id);
-    });
-
-    it('throws NotFound exception if no element is found', async () => {
-      const mockError = new NotFoundException(
-        `Event with id: ${mockEvent.id} not found`,
-      );
-
-      jest.spyOn(service, 'deleteById').mockRejectedValue(mockError);
-      expect(service.deleteById).toHaveBeenCalled();
-      await expect(
-        controller.deleteById(mockEvent.id),
-      ).rejects.toThrow(
-        new NotFoundException(`Event with id: ${mockEvent.id} not found`),
-      );
-    });
-  });
-
   describe('updateEvent', () => {
     it('should succesfully updateEvent when all query params are provided', async () => {
       const query  = {    
@@ -190,4 +165,53 @@ describe('Event Controller', () => {
     });
   });
 
+  describe('deleteById', () => {
+    it('should successfully deleteById', async () => {
+      jest
+        .spyOn(service, 'deleteById')
+        .mockResolvedValue();
+
+      await controller.deleteById(mockEvent.id);
+
+      expect(service.deleteById).toHaveBeenCalledWith(mockEvent.id);
+    });
+
+    it('throws NotFound exception if no element is found', async () => {
+      const mockError = new NotFoundException(
+        `Event with id: ${mockEvent.id} not found`,
+      );
+
+      jest.spyOn(service, 'deleteById').mockRejectedValue(mockError);
+      expect(service.deleteById).toHaveBeenCalled();
+      await expect(
+        controller.deleteById(mockEvent.id),
+      ).rejects.toThrow(
+        new NotFoundException(`Event with id: ${mockEvent.id} not found`),
+      );
+    });
+  });
+
+  describe('deleteAll', () => {
+    it('should successfully deleteAll', async () => {
+      jest
+        .spyOn(service, 'deleteAll')
+        .mockResolvedValue();
+
+      await controller.deleteAll();
+
+      expect(service.deleteAll).toHaveBeenCalled();
+    });
+
+    it('throws NotFound exception if no element is found', async () => {
+      const mockError = new NotFoundException(
+        'No events found to delete',
+      );
+
+      jest.spyOn(service, 'deleteAll').mockRejectedValue(mockError);
+      expect(service.deleteAll).toHaveBeenCalled();
+      await expect(
+        controller.deleteAll(),
+      ).rejects.toThrow(mockError);
+    });
+  });
 });

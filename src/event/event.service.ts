@@ -56,4 +56,11 @@ export class EventService {
         throw new NotFoundException(`Event with id: ${id} not found`)
       }
     }
+
+    async deleteAll(): Promise<void> {
+      const result = await this.eventRepository.delete({});
+      if (result.affected === 0) {
+        throw new NotFoundException('No events found to delete');
+      }
+    }
 }

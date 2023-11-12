@@ -25,11 +25,6 @@ export class EventController {
       return this.eventService.getEventById(id);
     }
 
-    @Delete('/:id')
-    deleteById(@Param('id') id: string): Promise<void> {
-      return this.eventService.deleteById(id);
-    }
-
     @Patch('/:id')
     updateEvent(
       @Param('id') id: string,
@@ -37,5 +32,14 @@ export class EventController {
     ): Promise<EventEntity> {
       return this.eventService.updateEvent(id, query);
     }
-    
+
+    @Delete('/:id')
+    deleteById(@Param('id') id: string): Promise<void> {
+      return this.eventService.deleteById(id);
+    }
+
+    @Delete()
+    deleteAll(): Promise<void> {
+      return this.eventService.deleteAll();
+    }
 }

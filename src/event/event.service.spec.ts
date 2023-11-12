@@ -162,6 +162,32 @@ describe('EventService', () => {
     });
   });
 
+  describe('deleteAll', () => {
+    it('should succesfully deleteAll', async () => {
+      const mockResult: DeleteResult = { affected: 1, raw: [] };
+      
+      jest
+        .spyOn(repository, 'delete')
+        .mockResolvedValue(mockResult);
+
+      await expect(
+        service.deleteAll(),
+      ).resolves.toBeUndefined();
+    });
+
+    it('throws NotFound exception if no elements to delete', async () => {
+      const mockResult: DeleteResult = { affected: 0, raw: [] };
+
+      jest
+      .spyOn(repository, 'delete')
+      .mockResolvedValue(mockResult);
+
+      await expect(service.deleteAll()).rejects.toThrow(
+        new NotFoundException('No events found to delete'),
+      );
+    });
+  });
+
   describe('updateEvent', () => {
     it('should succesfully updateEvent when all query params are provided', async () => {
       const query  = {    
