@@ -9,7 +9,9 @@ export class EventService {
     constructor(private readonly eventRepository: EventRepository) {}
 
     async getEvents(): Promise<EventEntity[]> {
-      return await this.eventRepository.find();
+      return await this.eventRepository.find({
+        order: { date: 'DESC', id: 'ASC' },
+      });
     }
 
     async createEvent(createEventDto: CreateEventDto): Promise<EventEntity> {
