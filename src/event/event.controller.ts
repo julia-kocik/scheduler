@@ -1,3 +1,4 @@
+import { ApiQuery } from '@nestjs/swagger';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventQueryDto } from './dto/update-event-query.dto';
 import { EventEntity } from './event.entity';
@@ -26,6 +27,10 @@ export class EventController {
     }
 
     @Patch('/:id')
+    @ApiQuery({ name: 'name', type: String, required: false })
+    @ApiQuery({ name: 'surname', type: String, required: false })
+    @ApiQuery({ name: 'email', type: String, required: false })
+    @ApiQuery({ name: 'date', type: Date, required: false })
     updateEvent(
       @Param('id') id: string,
       @Query() query: UpdateEventQueryDto, 

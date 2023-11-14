@@ -25,6 +25,7 @@ interface mockEventInterface {
   surname: string
   email: string
   date: Date
+  createdAt: Date
 }
 
 const mockEvent: mockEventInterface = {
@@ -32,7 +33,8 @@ const mockEvent: mockEventInterface = {
     name: 'Julia',
     surname: 'Test',
     email: 'email@email.com',
-    date: new Date(1995, 11, 17)
+    date: new Date(1995, 11, 17),
+    createdAt: new Date(2023, 11, 14)
 }
 
 const mockEventDto: CreateEventDto = {
@@ -97,7 +99,9 @@ describe('EventService', () => {
     
     it('should throw error when email is in an invalid format', async () => {
       const date = new Date(1995, 11, 17)
-      const event = new EventEntity('123', 'Jane', 'Smith', 'invalidemail', date);
+      const createdAt = new Date(2023, 11, 14)
+
+      const event = new EventEntity('123', 'Jane', 'Smith', 'invalidemail', date, createdAt);
 
       const errors = await validate(event);
       expect(errors.length).toBeGreaterThan(0);
@@ -201,7 +205,8 @@ describe('EventService', () => {
         name: 'Maria', 
         surname: 'Test1', 
         email: 'email@test1.com', 
-        date: new Date(1995, 11, 15)
+        date: new Date(1995, 11, 15),
+        createdAt: new Date(2023, 11, 14)
       }
       jest
         .spyOn(service, 'getEventById')
@@ -224,7 +229,8 @@ describe('EventService', () => {
         name: 'Maria', 
         surname: 'Test1', 
         email: mockEvent.email, 
-        date: mockEvent.date
+        date: mockEvent.date,
+        createdAt: new Date(2023, 11, 14)
       }
       jest
         .spyOn(service, 'getEventById')
