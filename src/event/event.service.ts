@@ -10,14 +10,14 @@ export class EventService {
 
     async getEvents(): Promise<EventEntity[]> {
       return await this.eventRepository.find({
-        order: { date: 'DESC', createdAt: 'ASC' },
+        order: { date: 'DESC', id: 'ASC' },
       });
     }
 
     async createEvent(createEventDto: CreateEventDto): Promise<EventEntity> {
       const { name, surname, email, date } = createEventDto
       const newEvent: EventEntity = this.eventRepository.create({
-          name, surname, email, date, createdAt: new Date()
+          name, surname, email, date
       })
       await this.eventRepository.save(newEvent)
       return newEvent

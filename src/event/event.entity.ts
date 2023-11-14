@@ -24,24 +24,18 @@ export class EventEntity {
   @Column()
   @ApiProperty()
   date: Date;
-
-  @Column()
-  @ApiProperty()
-  createdAt: Date;
   
   constructor(
     id: string,
     name: string,
     surname: string,
     email: string,
-    date: Date,
-    createdAt: Date
+    date: Date
   ) {
     this.id = id;
     this.name = name;
     this.surname = surname;
     this.email = email;
     this.date = date;
-    this.createdAt = createdAt;
   }
 }
