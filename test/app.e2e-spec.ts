@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
 
@@ -9,21 +9,20 @@ const mockCreateDto: mockCreateDtoInterface = {
   name: 'Julia',
   surname: 'Test',
   email: 'email@email.com',
-  date: new Date(1995, 11, 17)
-}
+  date: new Date(1995, 11, 17),
+};
 
 interface mockCreateDtoInterface {
-  name: string
-  surname: string
-  email: string
-  date: Date
+  name: string;
+  surname: string;
+  email: string;
+  date: Date;
 }
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let moduleFixture: TestingModule;
-  let createdEventId: string
-
+  let createdEventId: string;
 
   beforeAll(async () => {
     moduleFixture = await Test.createTestingModule({
@@ -44,12 +43,8 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-
   it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello!');
+    return request(app.getHttpServer()).get('/').expect(200).expect('Hello!');
   });
 
   it('(POST) - create new event', async () => {
@@ -58,15 +53,13 @@ describe('AppController (e2e)', () => {
       .send(mockCreateDto)
       .expect(201)
       .then((res) => {
-        expect(res.body.name).toBe('Julia')
+        expect(res.body.name).toBe('Julia');
         createdEventId = res.body.id;
       });
   });
 
   it('(GET) - get all events', async () => {
-    return request(app.getHttpServer())
-      .get('/event')
-      .expect(200)
+    return request(app.getHttpServer()).get('/event').expect(200);
   });
 
   it('(GET) - getEventById, show return event with correct id', async () => {
@@ -77,14 +70,14 @@ describe('AppController (e2e)', () => {
   });
 
   it('(GET) - getEventById, show throw not found with incorrect id', async () => {
-    return request(app.getHttpServer())
-      .get('/event/12345')
-      .expect(404)
+    return request(app.getHttpServer()).get('/event/12345').expect(404);
   });
 
   it('(PATCH) - update trip, should return successfully', async () => {
     return request(app.getHttpServer())
-      .patch(`/event/${createdEventId}?name=Marcela&surname=Test&email=email@test.com&date=2023-11-02T12:34:56.789Z`)
+      .patch(
+        `/event/${createdEventId}?name=Marcela&surname=Test&email=email@test.com&date=2023-11-02T12:34:56.789Z`,
+      )
       .expect(200)
       .then((res) => {
         expect(res.body.name).toBe('Marcela');
@@ -94,7 +87,7 @@ describe('AppController (e2e)', () => {
   it('(PATCH) - update trip, should return successfully', async () => {
     return request(app.getHttpServer())
       .patch(`/event/${createdEventId}`)
-      .expect(400)
+      .expect(400);
   });
 
   it('(DELETE) - delete trip, should delete trip from favourites successfully', async () => {
@@ -104,5 +97,5 @@ describe('AppController (e2e)', () => {
       .then((res) => {
         expect(res.body.name).toBeUndefined();
       });
-    });
+  });
 });
