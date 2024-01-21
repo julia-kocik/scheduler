@@ -36,7 +36,7 @@ export function mapUpdateQueryToEntity(
     mapped.email = query.email;
   }
 
-  if (query.date instanceof Date) {
+  if (query.date !== undefined) {
     mapped.date = query.date;
   }
 
