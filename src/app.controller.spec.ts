@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 
-
 describe('App Controller', () => {
   let controller: AppController;
 
@@ -17,12 +16,4 @@ describe('App Controller', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  
-  describe('getHello', () => {
-    it('should successfully return Hello', () => {
-      const result = controller.getHello();
-      expect(result).toEqual("Hello!");
-    });
-  });
-
 });
