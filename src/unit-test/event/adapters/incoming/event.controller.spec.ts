@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventController } from './event.controller';
-import { EventService } from './event.service';
-import { CreateEventDto } from './dto/create-event.dto';
+import { EventController } from '../../../../event/adapters/incoming/event.controller';
+import { EventService } from '../../../../event/application/event.service';
+import { CreateEventDto } from '../../../../event/port/incoming/dto/create-event.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { EventEntity } from './event.entity';
-
+import { EventEntity } from '../../../../event/domain/model/event.entity';
 
 const mockEventService = {
   getEvents: jest.fn(),
@@ -16,21 +15,21 @@ const mockEventService = {
 };
 
 interface mockEventInterface {
-  id: string
-  name: string
-  surname: string
-  email: string
-  date: Date
-  createdAt: Date
+  id: string;
+  name: string;
+  surname: string;
+  email: string;
+  date: Date;
+  createdAt: Date;
 }
 
 const mockEvent: mockEventInterface = {
-    id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
-    name: 'Julia',
-    surname: 'Test',
-    email: 'email@email.com',
-    date: new Date(1995, 11, 17),
-    createdAt: new Date(2023, 11, 14)
+  id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
+  name: 'Julia',
+  surname: 'Test',
+  email: 'email@email.com',
+  date: new Date(1995, 11, 17),
+  createdAt: new Date(2023, 11, 14),
 };
 
 const mockEventDto: CreateEventDto = {
@@ -39,7 +38,6 @@ const mockEventDto: CreateEventDto = {
   email: 'email@email.com',
   date: new Date(1995, 11, 17),
 };
-
 
 describe('Event Controller', () => {
   let controller: EventController;
@@ -67,9 +65,7 @@ describe('Event Controller', () => {
 
   describe('getEvents', () => {
     it('should successfully return all events', async () => {
-      jest
-        .spyOn(service, 'getEvents')
-        .mockResolvedValue([mockEvent]);
+      jest.spyOn(service, 'getEvents').mockResolvedValue([mockEvent]);
       const result = await controller.getEvents();
       expect(service.getEvents).toHaveBeenCalled();
       expect(result).toEqual([mockEvent]);
@@ -78,9 +74,7 @@ describe('Event Controller', () => {
 
   describe('createEvent', () => {
     it('should create a new event and return it, with correct params', async () => {
-      jest
-        .spyOn(service, 'createEvent')
-        .mockResolvedValue(mockEvent);
+      jest.spyOn(service, 'createEvent').mockResolvedValue(mockEvent);
       const result = await controller.createEvent(mockEventDto);
       expect(result).toEqual(mockEvent);
     });
@@ -88,10 +82,10 @@ describe('Event Controller', () => {
 
   describe('getEventById', () => {
     it('should successfully return event with a given id', async () => {
-      jest
-        .spyOn(service, 'getEventById')
-        .mockResolvedValue(mockEvent);
-      const result = await controller.getEventById('1befbb09-782a-4924-9e51-98f8ec8069ee');
+      jest.spyOn(service, 'getEventById').mockResolvedValue(mockEvent);
+      const result = await controller.getEventById(
+        '1befbb09-782a-4924-9e51-98f8ec8069ee',
+      );
       expect(result).toEqual(mockEvent);
     });
 
@@ -109,71 +103,62 @@ describe('Event Controller', () => {
 
   describe('updateEvent', () => {
     it('should succesfully updateEvent when all query params are provided', async () => {
-      const query  = {    
-        name: 'Maria', 
-        surname: 'Test1', 
-        email: 'email@test1.com', 
-        date: new Date(1995, 11, 15)
-      }
-      const updatedEvent: EventEntity = {    
-        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',      
-        name: 'Maria', 
-        surname: 'Test1', 
-        email: 'email@test1.com', 
+      const query = {
+        name: 'Maria',
+        surname: 'Test1',
+        email: 'email@test1.com',
         date: new Date(1995, 11, 15),
-        createdAt: new Date(2023, 11, 14)
-      }
-      jest
-        .spyOn(service, 'updateEvent')
-        .mockResolvedValue(updatedEvent);
+      };
+      const updatedEvent: EventEntity = {
+        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
+        name: 'Maria',
+        surname: 'Test1',
+        email: 'email@test1.com',
+        date: new Date(1995, 11, 15),
+        createdAt: new Date(2023, 11, 14),
+      };
+      jest.spyOn(service, 'updateEvent').mockResolvedValue(updatedEvent);
 
-      const result = await controller.updateEvent(
-        mockEvent.id,
-        query,
-      );
+      const result = await controller.updateEvent(mockEvent.id, query);
       expect(result).toEqual(updatedEvent);
     });
 
     it('should succesfully updateEvent when some query params are provided', async () => {
-      const query  = {    
-        name: 'Maria', 
-        surname: 'Test1', 
-      }
-      const updatedEvent: EventEntity = {    
-        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',      
-        name: 'Maria', 
-        surname: 'Test1', 
-        email: mockEvent.email, 
+      const query = {
+        name: 'Maria',
+        surname: 'Test1',
+      };
+      const updatedEvent: EventEntity = {
+        id: '1befbb09-782a-4924-9e51-98f8ec8069ee',
+        name: 'Maria',
+        surname: 'Test1',
+        email: mockEvent.email,
         date: mockEvent.date,
-        createdAt: new Date(2023, 11, 14)
-      }
-      jest
-        .spyOn(service, 'updateEvent')
-        .mockResolvedValue(updatedEvent);
+        createdAt: new Date(2023, 11, 14),
+      };
+      jest.spyOn(service, 'updateEvent').mockResolvedValue(updatedEvent);
 
-      const result = await controller.updateEvent(
-        mockEvent.id,
-        query,
-      );
+      const result = await controller.updateEvent(mockEvent.id, query);
       expect(result).toEqual(updatedEvent);
     });
 
     it('should throw BadRequest when none params are provided', async () => {
-      const query  = {}
+      const query = {};
       jest
-        .spyOn(service, 'updateEvent').mockRejectedValue(new BadRequestException('No valid query parameters provided'));
-
-        await expect(controller.updateEvent(mockEvent.id, query)).rejects.toThrow(
+        .spyOn(service, 'updateEvent')
+        .mockRejectedValue(
           new BadRequestException('No valid query parameters provided'),
         );
+
+      await expect(controller.updateEvent(mockEvent.id, query)).rejects.toThrow(
+        new BadRequestException('No valid query parameters provided'),
+      );
     });
   });
 
   describe('deleteById', () => {
     it('should successfully deleteById', async () => {
-      jest
-        .spyOn(service, 'deleteById')
-        .mockResolvedValue();
+      jest.spyOn(service, 'deleteById').mockResolvedValue();
 
       await controller.deleteById(mockEvent.id);
 
@@ -187,9 +172,7 @@ describe('Event Controller', () => {
 
       jest.spyOn(service, 'deleteById').mockRejectedValue(mockError);
       expect(service.deleteById).toHaveBeenCalled();
-      await expect(
-        controller.deleteById(mockEvent.id),
-      ).rejects.toThrow(
+      await expect(controller.deleteById(mockEvent.id)).rejects.toThrow(
         new NotFoundException(`Event with id: ${mockEvent.id} not found`),
       );
     });
@@ -197,9 +180,7 @@ describe('Event Controller', () => {
 
   describe('deleteAll', () => {
     it('should successfully deleteAll', async () => {
-      jest
-        .spyOn(service, 'deleteAll')
-        .mockResolvedValue();
+      jest.spyOn(service, 'deleteAll').mockResolvedValue();
 
       await controller.deleteAll();
 
@@ -207,15 +188,11 @@ describe('Event Controller', () => {
     });
 
     it('throws NotFound exception if no element is found', async () => {
-      const mockError = new NotFoundException(
-        'No events found to delete',
-      );
+      const mockError = new NotFoundException('No events found to delete');
 
       jest.spyOn(service, 'deleteAll').mockRejectedValue(mockError);
       expect(service.deleteAll).toHaveBeenCalled();
-      await expect(
-        controller.deleteAll(),
-      ).rejects.toThrow(mockError);
+      await expect(controller.deleteAll()).rejects.toThrow(mockError);
     });
   });
 });

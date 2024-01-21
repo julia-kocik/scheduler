@@ -15,8 +15,6 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "strict": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "ignoreDeprecations": "5.0"
+    "strict": true
   }
 }
