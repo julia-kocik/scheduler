@@ -44,7 +44,10 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer()).get('/').expect(200).expect('Hello!');
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(200)
+      .expect('Hello World!');
   });
 
   it('(POST) - create new event', async () => {
@@ -73,7 +76,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer()).get('/event/12345').expect(404);
   });
 
-  it('(PATCH) - update trip, should return successfully', async () => {
+  it('(PATCH) - update event, should return successfully', async () => {
     return request(app.getHttpServer())
       .patch(
         `/event/${createdEventId}?name=Marcela&surname=Test&email=email@test.com&date=2023-11-02T12:34:56.789Z`,
@@ -84,13 +87,13 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  it('(PATCH) - update trip, should return successfully', async () => {
+  it('(PATCH) - update event, should return successfully', async () => {
     return request(app.getHttpServer())
       .patch(`/event/${createdEventId}`)
       .expect(400);
   });
 
-  it('(DELETE) - delete trip, should delete trip from favourites successfully', async () => {
+  it('(DELETE) - should delete event successfully', async () => {
     return request(app.getHttpServer())
       .delete(`/event/${createdEventId}`)
       .expect(200)

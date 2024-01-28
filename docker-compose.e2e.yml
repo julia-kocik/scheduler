@@ -9,5 +9,5 @@ services:
             STAGE: test
         volumes:
             - /app/node_modules
-            - .:/apps
+            - .:/app
         
